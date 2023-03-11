@@ -12,6 +12,6 @@ jobs:
         with:
           node-version: 18.x
       - name: INSTALL DEPENDENCIES
-        run: npm ci
+        run: npm i --save-exact=true
       - name: RUN TEST
         run: ng test --no-watch--code-coverage --browsers=ChromeHeadlessCI
