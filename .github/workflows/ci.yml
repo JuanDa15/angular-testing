@@ -14,4 +14,4 @@ jobs:
       - name: INSTALL DEPENDENCIES
         run: npm i --save-exact=true
       - name: RUN TEST
-        run: npx ng test --no-watch--code-coverage --browsers=ChromeHeadlessCI
+        run: npx ng test --no-watch --code-coverage --browsers=ChromeHeadlessCI
