@@ -1,0 +1,17 @@
+name: CI Angular test
+on: push
+jobs:
+  # Puede ser cualquier nombre
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CLONE
+      - uses: actions/checkout@v2
+      - name: NODE INSTALLATION
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: INSTALL DEPENDENCIES
+        run: npm ci
+      - name: RUN TEST
+        run: ng test --no-watch--code-coverage --browsers=ChromeHeadlessCI

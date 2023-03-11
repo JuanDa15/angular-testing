@@ -1,3 +1,21 @@
 <section class="container">
   <h1>Products component</h1>
+  <ng-container *ngIf="products.length > 0">
+    <section class="grid">
+      <article *ngFor="let item of products">
+          <header>
+            <h2>{{item.title}}</h2>
+            <p>{{item.description}}</p>
+          </header>
+          <main>
+            <figure>
+              <img [src]="item.images[0]" [alt]="item.title">
+            </figure>
+          </main>
+          <footer>
+            <p><b>Price:</b> {{item.price}}</p>
+          </footer>
+        </article>
+      </section>
+  </ng-container>
 </section>
