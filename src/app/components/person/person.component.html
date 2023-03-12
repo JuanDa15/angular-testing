@@ -1,0 +1,23 @@
+<section class="container">
+  <h3 test-id="h3-test">Hola, esto es el PersonComponent</h3>
+  <p test-id="p-test">Soy el parrafo xd</p>
+</section>
+
+<section class="container" *ngIf="person">
+  <h3 test-id="h3-name">Hola, {{person.name+' '+person.lastname}}</h3>
+  <p test-id="p-heigth">Mi altura es {{person.heigth}}</p>
+  <button
+    type="button"
+    (click)="calcImc()"
+    test-id="imc-btn"
+  >
+    IMC: {{ imc }}
+  </button>
+  <button
+    type="button"
+    (click)="emit()"
+    test-id="btn-emit"
+  >
+    Select
+  </button>
+</section>

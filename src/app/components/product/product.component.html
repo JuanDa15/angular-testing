@@ -1,0 +1,14 @@
+<article *ngIf="product">
+  <header>
+    <h2>{{product.title}}</h2>
+    <p>{{product.description}}</p>
+  </header>
+  <main>
+    <figure>
+      <img [src]="product.images[0]" [alt]="product.title">
+    </figure>
+  </main>
+  <footer>
+    <p><b>Price:</b> {{product.price}}</p>
+  </footer>
+</article>

@@ -15,21 +15,38 @@ import { ProductsService } from 'src/app/services/product.service';
   `]
 })
 export class ProductsComponent implements OnInit {
-
+  public limit;
+  public offset;
+  public status: 'loading'|'success'|'error'|'init';
   products: Product[];
 
   constructor(
     private _productService: ProductsService
   ) {
+    this.status = 'init';
+    this.offset = 0;
+    this.limit = 10;
     this.products = [];
   }
 
   ngOnInit(): void {
-    this._productService.getAllSimple().subscribe({
+    this.getProducts();
+  }
+
+  public getProducts() {
+    this.status = 'loading';
+    this._productService.getAll(this.limit, this.offset).subscribe({
       next: (val) => {
-        this.products = val;
+        this.status = 'success';
+        this.offset += this.limit;
+        this.products = [...this.products, ...val];
+      },
+      error: () => {
+        setTimeout(() => {
+          this.products = [];
+          this.status = 'error';
+        }, 3000)
       }
     })
   }
-
 }

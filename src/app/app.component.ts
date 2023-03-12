@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Calculator } from './calculator';
+import { Person } from './models/person.model';
 
 @Component({
   selector: 'app-root',
@@ -13,5 +14,6 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     const calculator = new Calculator();
     const rta = calculator.multiply(4,9);
+    const person = new Person('juan','osorio',23,65,172);
   }
 }
