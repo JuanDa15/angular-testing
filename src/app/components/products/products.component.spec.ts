@@ -5,15 +5,17 @@ import { ProductComponent } from '../product/product.component';
 import { of, defer } from "rxjs";
 import { ProductsComponent } from './products.component';
 import { By } from '@angular/platform-browser';
+import { ValueService } from 'src/app/services/value.service';
 
-fdescribe('ProductsComponent', () => {
+describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
   let productService: jasmine.SpyObj<ProductsService>;
-
+  let valueService: jasmine.SpyObj<ValueService>;
   beforeEach(async () => {
     // Crear spy
     const productsSpy = jasmine.createSpyObj('ProductsService',['getAll']);
+    const valueSpy = jasmine.createSpyObj('ValueService',['getPromiseValue'])
     await TestBed.configureTestingModule({
       declarations: [
         ProductsComponent,
@@ -23,6 +25,10 @@ fdescribe('ProductsComponent', () => {
         {
           provide: ProductsService,
           useValue: productsSpy
+        },
+        {
+          provide: ValueService,
+          useValue: valueSpy
         }
       ]
     }).compileComponents();
@@ -33,6 +39,7 @@ fdescribe('ProductsComponent', () => {
     component = fixture.componentInstance;
     // Injectar el servicio
     productService = TestBed.inject(ProductsService)as jasmine.SpyObj<ProductsService>;
+    valueService = TestBed.inject(ValueService) as jasmine.SpyObj<ValueService>;
     // Generar la respuesta del servicio
     const productsMock = generateManyProducts(10);
     productService.getAll.and.returnValue(of(productsMock))
@@ -111,6 +118,37 @@ fdescribe('ProductsComponent', () => {
       fixture.detectChanges();
 
       expect(component.status).toBe('error');
+    }));
+  });
+
+  describe('call promise', () => {
+    it('should return promise value',async() => {
+      // Arrange
+      const valueToTest = 'hello juan';
+      // valueService.getPromiseValue.and.callFake(() => Promise.resolve(valueToTest));
+      valueService.getPromiseValue.and.returnValue(Promise.resolve(valueToTest));
+      await component.callPromise();
+      fixture.detectChanges();
+      // Assert
+      expect(valueService.getPromiseValue).toHaveBeenCalled();
+      expect(component.rta).toBe(valueToTest);
+    });
+    it('should render promise response in template', fakeAsync(() => {
+      // Arrange
+      const valueToTest = 'hello juan';
+      // valueService.getPromiseValue.and.callFake(() => Promise.resolve(valueToTest));
+      valueService.getPromiseValue.and.returnValue(Promise.resolve(valueToTest));
+      const btnDebug = fixture.debugElement.query(By.css('[test-id="btn-promise"]'));
+      const textDebug = fixture.debugElement.query(By.css('[test-id="response-promise"]'));
+      const textElement = <HTMLHeadingElement>textDebug.nativeElement;
+      // Act
+      btnDebug.triggerEventHandler('click', null);
+      // RESOLVE THE PROMISE OF THE FUNCTION
+      tick();
+      fixture.detectChanges();
+      // Assert
+      expect(valueService.getPromiseValue).toHaveBeenCalled();
+      expect(textElement.textContent).toContain(valueToTest);
     }));
   });
 });

@@ -10,6 +10,10 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
 import { PersonComponent } from './components/person/person.component';
 import { PeopleComponent } from './components/people/people.component';
 import { ProductComponent } from './components/product/product.component';
+import { OthersComponent } from './components/others/others.component';
+import { HighligthDirective } from './directives/highligth.directive';
+import { FormsModule } from '@angular/forms';
+import { ReversePipe } from './pipes/reverse.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,12 +21,16 @@ import { ProductComponent } from './components/product/product.component';
     PicoPreviewComponent,
     PersonComponent,
     PeopleComponent,
-    ProductComponent
+    ProductComponent,
+    OthersComponent,
+    HighligthDirective,
+    ReversePipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     {

@@ -1,5 +1,13 @@
 <section class="container">
   <h1>Products component</h1>
+  <h3 test-id="response-promise">Rta: {{rta}}</h3>
+  <button
+    test-id="btn-promise"
+    type="button"
+    (click)="callPromise()"
+  >
+    callPromise
+  </button>
   <ng-container *ngIf="products.length > 0">
     <section class="grid">
       <app-product

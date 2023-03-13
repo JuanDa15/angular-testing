@@ -1,0 +1,17 @@
+<section class="container">
+  <h3>Directive</h3>
+
+  <h5 highligth test-id="default-directive">Hay un valor</h5>
+  <h5 highligth="yellow" test-id="yellow-directive">Hay un valor</h5>
+  <h5 [highligth]="color" test-id="dynamic-directive">Hay un valor</h5>
+
+  <input type="color" [(ngModel)]="color" (change)="xd($event)">
+
+  <h4>
+    Pipe
+  </h4>
+  <p>Texto normal</p>
+  <p>{{'Texto normal' | reverse}}</p>
+  <input type="text" [(ngModel)]="word" test-id="pipe-input">
+  <p test-id="pipe-word">{{word | reverse}}</p>
+</section>
