@@ -59,6 +59,9 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     },
+    mochaReporter: {
+      ignoreSkipped: true,
+    },
     singleRun: false,
     restartOnFileChange: true
   });

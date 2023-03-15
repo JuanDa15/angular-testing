@@ -32,6 +32,10 @@ import { ReversePipe } from './pipes/reverse.pipe';
     HttpClientModule,
     FormsModule
   ],
+  exports: [
+    OthersComponent,
+    HighligthDirective
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

@@ -8,6 +8,10 @@ import { ProductsComponent } from './components/products/products.component';
 
 const routes: Routes = [
   {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  {
     path: 'products',
     component: ProductsComponent
   },

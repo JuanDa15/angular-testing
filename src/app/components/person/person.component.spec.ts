@@ -2,6 +2,7 @@ import { DebugElement, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Person } from 'src/app/models/person.model';
+import { clickEvent, getText, queryById } from 'src/testing';
 
 import { PersonComponent } from './person.component';
 
@@ -41,10 +42,9 @@ describe('PersonComponent', () => {
     // Arrange
     const personDebug: DebugElement = fixture.debugElement;
     // Act
-    const pDebug = personDebug.query(By.css('[test-id="p-test"]'));
-    const pTag = <HTMLParagraphElement>pDebug?.nativeElement;
+    const text = getText(fixture, 'p-test');
     // Assert
-    expect(pTag.textContent).toEqual("Soy el parrafo xd")
+    expect(text).toEqual("Soy el parrafo xd")
   });
 
   it('should have a <h3> with text "Hola, esto es el PersonComponent"', () => {
@@ -94,13 +94,16 @@ describe('PersonComponent', () => {
     it('should calc imc when click', () => {
       // Arrange
       const expectedMessage = 'down';
-      const btnDebug = fixture.debugElement.query(By.css('[test-id="imc-btn"]'));
-      const btnElement = <HTMLButtonElement>btnDebug.nativeElement;
+      clickEvent<PersonComponent>(
+        fixture,
+        'imc-btn',
+        true
+      )
       // Act
-      btnDebug.triggerEventHandler('click', {});
       fixture.detectChanges();
+      const text = getText(fixture,'imc-btn');
       // Assert
-      expect(btnElement.textContent).toContain(expectedMessage);
+      expect(text).toContain(expectedMessage);
     })
   });
 
