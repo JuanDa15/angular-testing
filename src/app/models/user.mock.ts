@@ -1,12 +1,13 @@
 import { faker } from "@faker-js/faker"
+import { User } from "./user.model";
 
 export function getUserRegister(
   samePasswords: boolean = false,
   acceptTerms: boolean = false
 ) {
 
-  const password = faker.internet.password(6, false);
-
+  let password = faker.internet.password(6, false);
+  password = password+1;
   return {
     name: faker.name.fullName({
       sex: 'male'
@@ -21,7 +22,21 @@ export function getUserRegister(
     ),
     password: password,
     confirmPassword: (samePasswords) ? password : faker.internet.password(6, false),
-    checkTerms: acceptTerms
+    checkTerms: acceptTerms,
+    avatar: faker.internet.avatar()
+  }
+}
+
+export function getRegisterResponse(
+  role: 'admin' | 'customer'
+): User {
+  return {
+    name: getName('male'),
+    email: getEmail(true),
+    avatar: faker.internet.avatar(),
+    password: getPassword(8, false),
+    role: role,
+    id: faker.datatype.uuid()
   }
 }
 

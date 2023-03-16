@@ -1,9 +1,11 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { getEmail, getName, getUserRegister } from 'src/app/models/user.mock';
+import { getEmail, getName, getRegisterResponse, getUserRegister } from 'src/app/models/user.mock';
+import { User } from 'src/app/models/user.model';
 import { UsersService } from 'src/app/services/users.service';
-import { getText, queryById, setInputValue } from 'src/testing';
+import { environment } from 'src/environments/environment';
+import { asyncData, getText, mockObservable, queryById, setInputValue } from 'src/testing';
 
 import { RegisterFormComponent } from './register-form.component';
 
@@ -11,8 +13,9 @@ fdescribe('RegisterFormComponent', () => {
   let component: RegisterFormComponent;
   let fixture: ComponentFixture<RegisterFormComponent>;
   let userService: jasmine.SpyObj<UsersService>;
+  let httpController: HttpTestingController;
   beforeEach(async () => {
-    const userServiceSpy = jasmine.createSpyObj('UserService',['create']);
+    const spy = jasmine.createSpyObj('UsersService',['create']);
     await TestBed.configureTestingModule({
       declarations: [ RegisterFormComponent ],
       imports: [
@@ -21,8 +24,8 @@ fdescribe('RegisterFormComponent', () => {
       ],
       providers: [
         {
-          provider: UsersService,
-          useValue: userServiceSpy
+          provide: UsersService,
+          useValue: spy
         }
       ]
     })
@@ -32,6 +35,7 @@ fdescribe('RegisterFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RegisterFormComponent);
     component = fixture.componentInstance;
+    httpController = TestBed.inject(HttpTestingController);
     userService = TestBed.inject(UsersService) as jasmine.SpyObj<UsersService>;
     fixture.detectChanges();
   });
@@ -66,4 +70,36 @@ fdescribe('RegisterFormComponent', () => {
     expect(component.emailField?.invalid).toBeTruthy();
     expect(alertText).toContain("It's not a email");
   });
+  it('should create a user correctly', () => {
+    const mockUser: User = {...getRegisterResponse('admin')};
+    userService.create.and.returnValue(mockObservable(mockUser));
+    // Arrange
+    component.form.patchValue({
+      ...getUserRegister(true, true)
+    });
+
+    // Act
+    component.register(new Event('submit'));
+    // Assert
+    expect(component.form.valid).toBeTruthy();
+    expect(userService.create).toHaveBeenCalled();
+    expect(userService.create).toHaveBeenCalledWith(component.form.value);
+  });
+  it('should send the form successfully and change "loading" to "success"', fakeAsync(() => {
+    // Arrange
+    const mockUser: User = {...getRegisterResponse('admin')};
+    userService.create.and.returnValue(asyncData(mockUser));
+    component.form.patchValue({
+      ...getUserRegister(true, true)
+    });
+    // Act
+    component.register(new Event('submit'));
+    // Assert
+    expect(component.status).toBe('loading');
+    tick();
+    fixture.detectChanges();
+    expect(component.status).toBe('success');
+    expect(userService.create).toHaveBeenCalled();
+    expect(userService.create).toHaveBeenCalledWith(component.form.value);
+  }));
 });

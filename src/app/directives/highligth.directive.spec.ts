@@ -11,13 +11,13 @@ import { HighligthDirective } from './highligth.directive';
 
 @Component({
   template: `
-  <h5 class="title" highligth test-id="default-directive">Hay un valor default</h5>
-  <h5 highligth="yellow" test-id="yellow-directive">Hay un valor</h5>
-  <p [highligth]="color"  test-id="dynamic-directive">parrafo</p>
+  <h5 class="title" highligth data-testid="default-directive">Hay un valor default</h5>
+  <h5 highligth="yellow" data-testid="yellow-directive">Hay un valor</h5>
+  <p [highligth]="color"  data-testid="dynamic-directive">parrafo</p>
   <p>otro parrafo</p>
-  <input type="color" [(ngModel)]="color" test-id="input-color">
-  <input type="text" [(ngModel)]="word" test-id="pipe-input">
-  <p test-id="pipe-word">{{word | reverse}}</p>
+  <input type="color" [(ngModel)]="color" data-testid="input-color">
+  <input type="text" [(ngModel)]="word" data-testid="pipe-input">
+  <p data-testid="pipe-word">{{word | reverse}}</p>
   `,
 })
 
@@ -90,7 +90,7 @@ describe('HighligthDirective', () => {
 
     it('should have default color highligth ', () => {
       // Arrange
-      const elementDebug = fixture.debugElement.query(By.css('[test-id="default-directive"]'));
+      const elementDebug = fixture.debugElement.query(By.css('[data-testid="default-directive"]'));
       const element = elementDebug.nativeElement as HTMLHeadingElement;
       // Act
       // Assert
@@ -98,7 +98,7 @@ describe('HighligthDirective', () => {
     });
     it('should have default yellow highligth ', () => {
       // Arrange
-      const elementDebug = fixture.debugElement.query(By.css('[test-id="yellow-directive"]'));
+      const elementDebug = fixture.debugElement.query(By.css('[data-testid="yellow-directive"]'));
       const element = elementDebug.nativeElement as HTMLHeadingElement;
       // Act
       // Assert
@@ -107,9 +107,9 @@ describe('HighligthDirective', () => {
 
     it('should have dinamic highligth ', () => {
       // Arrange
-      const inputDebug = fixture.debugElement.query(By.css('[test-id="input-color"]'));
+      const inputDebug = fixture.debugElement.query(By.css('[data-testid="input-color"]'));
       const inputEle = inputDebug.nativeElement as HTMLInputElement;
-      const elementDebug = fixture.debugElement.query(By.css('[test-id="dynamic-directive"]'));
+      const elementDebug = fixture.debugElement.query(By.css('[data-testid="dynamic-directive"]'));
       const directive = elementDebug.injector.get(HighligthDirective);
 
       const element = elementDebug.nativeElement as HTMLHeadingElement;
@@ -123,8 +123,8 @@ describe('HighligthDirective', () => {
 
   describe('test for dynamic pipe', () => {
     it('should reverse any word', () => {
-      const inputDebug = fixture.debugElement.query(By.css('[test-id="pipe-input"]'));
-      const wordDebug = fixture.debugElement.query(By.css('[test-id="pipe-word"]'));
+      const inputDebug = fixture.debugElement.query(By.css('[data-testid="pipe-input"]'));
+      const wordDebug = fixture.debugElement.query(By.css('[data-testid="pipe-word"]'));
       const wordEle = wordDebug.nativeElement as HTMLParagraphElement;
       const inputEle = inputDebug.nativeElement as HTMLInputElement;
       inputEle.value = 'ROMA';

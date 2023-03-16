@@ -49,7 +49,7 @@ describe('PersonComponent', () => {
 
   it('should have a <h3> with text "Hola, esto es el PersonComponent"', () => {
     // Arrange
-    const h3Debug = fixture.debugElement.query(By.css('[test-id="h3-test"]'));
+    const h3Debug = fixture.debugElement.query(By.css('[data-testid="h3-test"]'));
     const h3Tag = <HTMLHeadingElement>h3Debug.nativeElement;
     // Act
     // Assert
@@ -69,7 +69,7 @@ describe('PersonComponent', () => {
     });
     it('should render the name', () => {
       // Arrange
-      const h3Debug = fixture.debugElement.query(By.css('[test-id="h3-name"]'));
+      const h3Debug = fixture.debugElement.query(By.css('[data-testid="h3-name"]'));
       const h3Element = <HTMLHeadingElement>h3Debug.nativeElement;
       // Act
       // Assert
@@ -77,7 +77,7 @@ describe('PersonComponent', () => {
     });
     it('should render the heigth', () => {
       // Arrange
-      const pDebug = fixture.debugElement.query(By.css('[test-id="p-heigth"]'));
+      const pDebug = fixture.debugElement.query(By.css('[data-testid="p-heigth"]'));
       const pElement = <HTMLHeadingElement>pDebug.nativeElement;
       // Act
       // Assert
@@ -114,7 +114,7 @@ describe('PersonComponent', () => {
     });
     it('should raise onSelected event', () => {
       // Arrange
-      const btnDebug = fixture.debugElement.query(By.css('[test-id="btn-emit"]'));
+      const btnDebug = fixture.debugElement.query(By.css('[data-testid="btn-emit"]'));
       const btnElement = <HTMLButtonElement>btnDebug.nativeElement;
       let selectedPerson: Person | undefined;
       component.onSelected.subscribe({
@@ -190,7 +190,7 @@ describe('Isolate test to person component (PersonComponent from host component)
   it('Should display person name', () => {
     const expectedName = `${component.person.name} ${component.person.lastname}`;
 
-    const h3Debug = fixture.debugElement.query(By.css('app-person [test-id="h3-name"]'));
+    const h3Debug = fixture.debugElement.query(By.css('app-person [data-testid="h3-name"]'));
     const h3Element = <HTMLHeadingElement>h3Debug.nativeElement;
 
     expect(h3Element.textContent).toContain(expectedName);
@@ -199,7 +199,7 @@ describe('Isolate test to person component (PersonComponent from host component)
   it('Should fire an event', () => {
     // Arrange
     const expectedValue = component.person;
-    const btnDebug = fixture.debugElement.query(By.css('app-person [test-id="btn-emit"]'));
+    const btnDebug = fixture.debugElement.query(By.css('app-person [data-testid="btn-emit"]'));
     const btnElement = <HTMLButtonElement>btnDebug.nativeElement;
     // Act
     btnDebug.triggerEventHandler('click', null);

@@ -14,7 +14,7 @@
             type="text"
             id="name"
             name="name"
-            id="name"
+            data-testid="name"
             placeholder="Full Name"
             formControlName="name"
             [attr.aria-invalid]="nameField?.touched ? nameField?.invalid : ''"
@@ -30,7 +30,7 @@
             type="email"
             id="email"
             name="email"
-            test-id="email"
+            data-testid="email"
             placeholder="Email address"
             formControlName="email"
             [attr.aria-invalid]="emailField?.touched ? emailField?.invalid : ''"
@@ -38,7 +38,7 @@
           <ng-container *ngIf="emailField?.touched && emailField?.errors">
             <small *ngIf="emailField?.hasError('required')">*Required</small>
             <small *ngIf="emailField?.hasError('email')"
-                   test-id="emailField-notEmail"
+                   data-testid="emailField-notEmail"
               >*It's not a email</small
             >
           </ng-container>
@@ -51,7 +51,7 @@
           type="password"
           id="password"
           name="password"
-          test-id="password"
+          data-testid="password"
           placeholder="Password"
           formControlName="password"
           [attr.aria-invalid]="
@@ -75,7 +75,7 @@
           type="password"
           id="confirmPassword"
           name="confirmPassword"
-          test-id="confirmPassword"
+          data-testid="confirmPassword"
           placeholder="Confirm password"
           formControlName="confirmPassword"
           [attr.aria-invalid]="
@@ -95,7 +95,7 @@
             type="checkbox"
             id="terms"
             name="terms"
-            test-id="terms"
+            data-testid="terms"
             formControlName="checkTerms"
             [attr.aria-invalid]="
               checkTermsField?.touched ? checkTermsField?.invalid : ''

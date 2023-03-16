@@ -13,12 +13,12 @@ export function queryById<F, T>(
   fixture: ComponentFixture<F>,
   selector: string
 ): [DebugElement, T]{
-  const selectorTemplate = `[test-id="${selector}"]`;
+  const selectorTemplate = `[data-testid="${selector}"]`;
   const debug = fixture.debugElement.query(By.css(selectorTemplate));
   let element;
 
   if (!debug) {
-    throw new Error(`queryById: Element with test-id ${selector} not found`);
+    throw new Error(`queryById: Element with data-testid ${selector} not found`);
   }
   element = <T>debug.nativeElement;
   return [debug, element];

@@ -53,12 +53,12 @@ describe('PeopleComponent', () => {
 
     const personComponentDebug = arr[2];
     const personComponentInstance = personComponentDebug.componentInstance as PersonComponent;
-    const btnDebug = personComponentDebug.query(By.css('[test-id="btn-emit"]'));
+    const btnDebug = personComponentDebug.query(By.css('[data-testid="btn-emit"]'));
     btnDebug.triggerEventHandler('click', null);
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      const nameDebug = fixture.debugElement.query(By.css('[test-id="list-name"]'));
+      const nameDebug = fixture.debugElement.query(By.css('[data-testid="list-name"]'));
       const nameElement = nameDebug.nativeElement as HTMLLIElement;
       // Assert
       expect(component.selectedPerson).toEqual(personComponentInstance.person);

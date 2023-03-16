@@ -10,17 +10,19 @@ import { MyValidators } from 'src/app/utils/validators';
 })
 export class RegisterFormComponent implements OnInit {
   form: FormGroup;
-
+  status: 'loading' | 'success' | 'error' | 'init';
   constructor(
     private fb: FormBuilder,
-    private usersService: UsersService
+    private usersService: UsersService,
   ) {
+    this.status = 'init'
     this.form =  this.fb.group(
       {
         name: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6), MyValidators.validPassword]],
         confirmPassword: ['', [Validators.required]],
+        avatar: ['https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/255.jpg', [Validators.required]],
         checkTerms: [false, [Validators.requiredTrue]],
       },
       {
@@ -35,8 +37,10 @@ export class RegisterFormComponent implements OnInit {
     event.preventDefault();
     if (this.form.valid) {
       const value = this.form.value;
+      this.status = 'loading';
       this.usersService.create(value)
       .subscribe((rta) => {
+        this.status = 'success';
         console.log(rta);
       });
     } else {
