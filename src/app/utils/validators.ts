@@ -4,7 +4,6 @@ export class MyValidators {
 
   static isPriceValid(control: AbstractControl) {
     const value = control.value;
-    console.log(value);
     if (value > 10000) {
       return {price_invalid: true};
     }
@@ -22,6 +21,10 @@ export class MyValidators {
   static matchPasswords(control: AbstractControl) {
     const password = control?.get('password')?.value;
     const confirmPassword = control?.get('confirmPassword')?.value;
+
+    if (password === undefined || confirmPassword === undefined) {
+      throw new Error('matchpasswords: password and confirmPassword not fount');
+    }
     if (password !== confirmPassword) {
       return {match_password: true};
     }

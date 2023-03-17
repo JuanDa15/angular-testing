@@ -61,14 +61,16 @@ export function getEmail(
 
 export function getPassword(
   length: number  = 15,
+  valid: boolean = true,
   memorable: boolean = false,
   pattern: RegExp | undefined = undefined,
   prefix: string | undefined = undefined
 ) {
-  return faker.internet.password(
+  const password = faker.internet.password(
     length,
     memorable,
     pattern,
     prefix
   );
+  return valid ? password+1 : 'fsefsefese';
 }

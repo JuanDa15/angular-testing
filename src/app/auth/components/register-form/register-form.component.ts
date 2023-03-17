@@ -42,6 +42,8 @@ export class RegisterFormComponent implements OnInit {
       .subscribe((rta) => {
         this.status = 'success';
         console.log(rta);
+      }, () => {
+        this.status = 'error';
       });
     } else {
       this.form.markAllAsTouched();

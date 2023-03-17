@@ -1,15 +1,15 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { getEmail, getName, getRegisterResponse, getUserRegister } from 'src/app/models/user.mock';
+import { getEmail, getName, getPassword, getRegisterResponse, getUserRegister } from 'src/app/models/user.mock';
 import { User } from 'src/app/models/user.model';
 import { UsersService } from 'src/app/services/users.service';
 import { environment } from 'src/environments/environment';
-import { asyncData, getText, mockObservable, queryById, setInputValue } from 'src/testing';
+import { asyncData, asyncError, getText, mockObservable, queryById, setCheckBox, setInputValue } from 'src/testing';
 
 import { RegisterFormComponent } from './register-form.component';
 
-fdescribe('RegisterFormComponent', () => {
+describe('RegisterFormComponent', () => {
   let component: RegisterFormComponent;
   let fixture: ComponentFixture<RegisterFormComponent>;
   let userService: jasmine.SpyObj<UsersService>;
@@ -102,4 +102,94 @@ fdescribe('RegisterFormComponent', () => {
     expect(userService.create).toHaveBeenCalled();
     expect(userService.create).toHaveBeenCalledWith(component.form.value);
   }));
+  /**
+   * En Angular, triggerEventHandler es un método de la clase
+   * DebugElement que se utiliza para simular el lanzamiento de un
+   *  evento en un elemento del DOM durante las pruebas unitarias.
+   *  Siempre y cuando dicho elemento tenga asociado el evento
+   * ej:
+   *  En este caso el triggerEventHandler no funcionaria ya que
+   *  el boton no tiene asociado el evento click, para simular
+   *  un click aca se haria con el HTMLElement.dispatchEvent('click'),
+   *  ya que este si simula la acción del click desde el dom
+   *  <button>Click</button>
+   *
+   *  En este otro caso si nos serviria el triggerEventHandler, el
+   * dispatch tambien serviria en este caso
+   * <button (click)="function()"> Click</button>
+   *
+   * Ejecutar el evento ngSubmit
+   * DebugElement.triggerEventHandler('ngSubmit', new Event('submit'))
+   */
+  it('should complete the form from UI', fakeAsync(() => {
+    // Arrange
+    spyOn(component, 'register').and.callThrough();
+    const mockUser: User = {...getRegisterResponse('admin')};
+    userService.create.and.returnValue(asyncData(mockUser));
+    const password = getPassword(10);
+    const [debSubmit, eleSubmit] = queryById<RegisterFormComponent, HTMLButtonElement>(fixture, 'submit-register');
+    const [deb, ele] = queryById<RegisterFormComponent,HTMLInputElement>(fixture,'terms');
+    // Act
+    setInputValue(fixture, 'name', getName('female'), true);
+    setInputValue(fixture, 'email', getEmail(true), true);
+    setInputValue(fixture, 'password', password, true);
+    setInputValue(fixture, 'confirmPassword', password, true);
+    // EQUIVALEN TO SETCHECKBOX ---------------------------
+    ele.checked = true;
+    ele.dispatchEvent(new Event('change'));
+    ele.dispatchEvent(new Event('blur'));
+    // -------------------------------------
+    fixture.detectChanges();
+    eleSubmit.click();
+    fixture.detectChanges();
+    expect(component.status).toBe('loading');
+    tick()
+    // Assert
+    expect(component.form.valid).toBeTruthy();
+    expect(component.status).toBe('success');
+    expect(component.register).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should error the form from UI', fakeAsync(() => {
+    // Arrange
+    spyOn(component, 'register').and.callThrough();
+    const mockUser: User = {...getRegisterResponse('admin')};
+    userService.create.and.returnValue(asyncError(new Error('500 Server error')));
+    const password = getPassword(10);
+    const [debSubmit, eleSubmit] = queryById<RegisterFormComponent, HTMLButtonElement>(fixture, 'submit-register');
+    const [deb, ele] = queryById<RegisterFormComponent,HTMLInputElement>(fixture,'terms');
+    // Act
+    setInputValue(fixture, 'name', getName('female'), true);
+    setInputValue(fixture, 'email', getEmail(true), true);
+    setInputValue(fixture, 'password', password, true);
+    setInputValue(fixture, 'confirmPassword', password, true);
+    // EQUIVALEN TO SETCHECKBOX ---------------------------
+    ele.checked = true;
+    ele.dispatchEvent(new Event('change'));
+    ele.dispatchEvent(new Event('blur'));
+    // -------------------------------------
+    fixture.detectChanges();
+    eleSubmit.click();
+    fixture.detectChanges();
+    expect(component.status).toBe('loading');
+    tick()
+    // Assert
+    expect(component.form.valid).toBeTruthy();
+    expect(component.status).toBe('error');
+    expect(component.register).toHaveBeenCalledTimes(1);
+  }));
+  it('should set match password error', () => {
+    setInputValue(fixture, 'name', getName('female'), true);
+    setInputValue(fixture, 'email', getEmail(true), true);
+    setInputValue(fixture, 'password', getPassword(10,true), true);
+    setInputValue(fixture, 'confirmPassword', getPassword(10,true), true);
+    setCheckBox(fixture, 'terms', true, true);
+    fixture.detectChanges();
+    expect(component.form.errors?.['match_password']).toBeTruthy()
+  });
+  it('should password has invalid_password', () => {
+    setInputValue(fixture, 'password', getPassword(10,false), true);
+    fixture.detectChanges();
+    expect(component.passwordField?.errors?.['invalid_password']).toBeTruthy()
+  })
 });
