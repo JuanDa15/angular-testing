@@ -1,7 +1,9 @@
-import { FormControl, FormGroup } from "@angular/forms";
+import { AsyncValidatorFn, FormControl, FormGroup } from "@angular/forms";
+import { mockObservable } from "src/testing";
+import { UsersService } from "../services/users.service";
 import { MyValidators } from "./validators";
 
-fdescribe('test for validators', () => {
+describe('test for validators', () => {
   it('should return null with valid price', () => {
     const input = new FormControl();
     input.setValidators(MyValidators.isPriceValid);
@@ -56,5 +58,22 @@ fdescribe('test for validators', () => {
     });
     const fn = () => MyValidators.matchPasswords(input)
     expect(fn).toThrow(new Error('matchpasswords: password and confirmPassword not fount'));
+  });
+
+
+  describe('test for asyncValidator', () => {
+    it('should return error', (doneFn) => {
+      const userService: jasmine.SpyObj<UsersService> = jasmine.createSpyObj('UsersService',['isAvailableByEmail']);
+      userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
+      const control = new FormControl('jdoo1114@cosa.co');
+      // Act
+      const validator = MyValidators.validateEmailAsync(userService);
+      validator(control).subscribe({
+        next: (val) => {
+          expect(val['not_available']).toBeTruthy();
+          doneFn();
+        }
+      })
+    })
   });
 });

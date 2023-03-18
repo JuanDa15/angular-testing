@@ -41,6 +41,10 @@
                    data-testid="emailField-notEmail"
               >*It's not a email</small
             >
+            <small *ngIf="emailField?.hasError('not_available')"
+                    data-testid="emailField-notAvailable"
+              >*the email is already register</small
+            >
           </ng-container>
         </label>
       </div>

@@ -9,13 +9,13 @@ import { asyncData, asyncError, getText, mockObservable, queryById, setCheckBox,
 
 import { RegisterFormComponent } from './register-form.component';
 
-describe('RegisterFormComponent', () => {
+fdescribe('RegisterFormComponent', () => {
   let component: RegisterFormComponent;
   let fixture: ComponentFixture<RegisterFormComponent>;
   let userService: jasmine.SpyObj<UsersService>;
   let httpController: HttpTestingController;
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('UsersService',['create']);
+    const spy = jasmine.createSpyObj('UsersService',['create', 'isAvailableByEmail']);
     await TestBed.configureTestingModule({
       declarations: [ RegisterFormComponent ],
       imports: [
@@ -45,10 +45,25 @@ describe('RegisterFormComponent', () => {
   });
 
   it('should be invalid the form', () => {
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
     component.form.patchValue({...getUserRegister(false, true)});
     expect(component.form.invalid).toBeTruthy();
   });
 
+  it('should the email field be async invalid from UI without helper', () => {
+    // Arrange
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
+    const [debug, element] = queryById<RegisterFormComponent, HTMLInputElement>(fixture,'email');
+    // Act
+    element.value = getEmail();
+    element.dispatchEvent(new Event('input'));
+    element.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    // Assert
+    const alertText = getText(fixture, 'emailField-notAvailable');
+    expect(component.emailField?.invalid).toBeTruthy();
+    expect(alertText).toContain("the email is already register");
+  });
   it('should the email field be invalid from UI without helper', () => {
     // Arrange
     const [debug, element] = queryById<RegisterFormComponent, HTMLInputElement>(fixture,'email');
@@ -71,6 +86,7 @@ describe('RegisterFormComponent', () => {
     expect(alertText).toContain("It's not a email");
   });
   it('should create a user correctly', () => {
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}));
     const mockUser: User = {...getRegisterResponse('admin')};
     userService.create.and.returnValue(mockObservable(mockUser));
     // Arrange
@@ -87,6 +103,7 @@ describe('RegisterFormComponent', () => {
   });
   it('should send the form successfully and change "loading" to "success"', fakeAsync(() => {
     // Arrange
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     const mockUser: User = {...getRegisterResponse('admin')};
     userService.create.and.returnValue(asyncData(mockUser));
     component.form.patchValue({
@@ -123,6 +140,7 @@ describe('RegisterFormComponent', () => {
    */
   it('should complete the form from UI', fakeAsync(() => {
     // Arrange
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     spyOn(component, 'register').and.callThrough();
     const mockUser: User = {...getRegisterResponse('admin')};
     userService.create.and.returnValue(asyncData(mockUser));
@@ -151,6 +169,7 @@ describe('RegisterFormComponent', () => {
   }));
 
   it('should error the form from UI', fakeAsync(() => {
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     // Arrange
     spyOn(component, 'register').and.callThrough();
     const mockUser: User = {...getRegisterResponse('admin')};

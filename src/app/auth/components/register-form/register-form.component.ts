@@ -19,7 +19,7 @@ export class RegisterFormComponent implements OnInit {
     this.form =  this.fb.group(
       {
         name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.required, Validators.email], [MyValidators.validateEmailAsync(this.usersService)]],
         password: ['', [Validators.required, Validators.minLength(6), MyValidators.validPassword]],
         confirmPassword: ['', [Validators.required]],
         avatar: ['https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/255.jpg', [Validators.required]],
