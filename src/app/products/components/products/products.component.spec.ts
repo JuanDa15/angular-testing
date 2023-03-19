@@ -6,6 +6,7 @@ import { ProductsComponent } from './products.component';
 import { By } from '@angular/platform-browser';
 import { ValueService } from 'src/app/services/value.service';
 import { asyncData, asyncError, getText, mockObservable, mockPromise, queryById } from 'src/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
@@ -19,7 +20,10 @@ describe('ProductsComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [
         ProductsComponent,
-        ProductComponent
+        ProductComponent,
+      ],
+      imports: [
+        RouterTestingModule
       ],
       providers: [
         {

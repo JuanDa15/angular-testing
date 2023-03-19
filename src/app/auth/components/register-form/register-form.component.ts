@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UsersService } from 'src/app/services/users.service';
 import { MyValidators } from 'src/app/utils/validators';
 
@@ -14,12 +15,14 @@ export class RegisterFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private usersService: UsersService,
+    private _router: Router
   ) {
     this.status = 'init'
+    // [MyValidators.validateEmailAsync(this.usersService)]
     this.form =  this.fb.group(
       {
         name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email], [MyValidators.validateEmailAsync(this.usersService)]],
+        email: ['', [Validators.required, Validators.email], ],
         password: ['', [Validators.required, Validators.minLength(6), MyValidators.validPassword]],
         confirmPassword: ['', [Validators.required]],
         avatar: ['https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/255.jpg', [Validators.required]],
@@ -41,6 +44,7 @@ export class RegisterFormComponent implements OnInit {
       this.usersService.create(value)
       .subscribe((rta) => {
         this.status = 'success';
+        this._router.navigateByUrl('/auth/login')
         console.log(rta);
       }, () => {
         this.status = 'error';

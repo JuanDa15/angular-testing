@@ -2,18 +2,17 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OthersComponent } from './components/others/others.component';
 import { PeopleComponent } from './components/people/people.component';
-import { PersonComponent } from './components/person/person.component';
 import { PicoPreviewComponent } from './components/pico-preview/pico-preview.component';
-import { ProductsComponent } from './components/products/products.component';
+import { AuthGuard } from './guards/auth.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path: 'products',
-    component: ProductsComponent
+    path: 'product',
+    loadChildren: () => import('./products/products.module').then(m => m.ProductsModule)
   },
   {
     path: 'pico-preview',
@@ -25,6 +24,7 @@ const routes: Routes = [
   },
   {
     path: 'others',
+    canActivate: [AuthGuard],
     component: OthersComponent
   }
 ];

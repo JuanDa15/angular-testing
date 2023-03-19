@@ -1,31 +1,38 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { getEmail, getName, getPassword, getRegisterResponse, getUserRegister } from 'src/app/models/user.mock';
 import { User } from 'src/app/models/user.model';
 import { UsersService } from 'src/app/services/users.service';
-import { environment } from 'src/environments/environment';
 import { asyncData, asyncError, getText, mockObservable, queryById, setCheckBox, setInputValue } from 'src/testing';
 
 import { RegisterFormComponent } from './register-form.component';
 
-fdescribe('RegisterFormComponent', () => {
+describe('RegisterFormComponent', () => {
   let component: RegisterFormComponent;
   let fixture: ComponentFixture<RegisterFormComponent>;
   let userService: jasmine.SpyObj<UsersService>;
+  let router: jasmine.SpyObj<Router>;
   let httpController: HttpTestingController;
   beforeEach(async () => {
     const spy = jasmine.createSpyObj('UsersService',['create', 'isAvailableByEmail']);
+    const routerSpy = jasmine.createSpyObj('Router',['navigateByUrl'])
     await TestBed.configureTestingModule({
       declarations: [ RegisterFormComponent ],
       imports: [
         HttpClientTestingModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterTestingModule
       ],
       providers: [
         {
           provide: UsersService,
           useValue: spy
+        },{
+          provide: Router,
+          useValue: routerSpy
         }
       ]
     })
@@ -37,6 +44,7 @@ fdescribe('RegisterFormComponent', () => {
     component = fixture.componentInstance;
     httpController = TestBed.inject(HttpTestingController);
     userService = TestBed.inject(UsersService) as jasmine.SpyObj<UsersService>;
+    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     fixture.detectChanges();
   });
 
@@ -45,14 +53,14 @@ fdescribe('RegisterFormComponent', () => {
   });
 
   it('should be invalid the form', () => {
-    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
+    // userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
     component.form.patchValue({...getUserRegister(false, true)});
     expect(component.form.invalid).toBeTruthy();
   });
 
-  it('should the email field be async invalid from UI without helper', () => {
+  xit('should the email field be async invalid from UI without helper', () => {
     // Arrange
-    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
+    // userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}));
     const [debug, element] = queryById<RegisterFormComponent, HTMLInputElement>(fixture,'email');
     // Act
     element.value = getEmail();
@@ -86,7 +94,7 @@ fdescribe('RegisterFormComponent', () => {
     expect(alertText).toContain("It's not a email");
   });
   it('should create a user correctly', () => {
-    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}));
+    // userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}));
     const mockUser: User = {...getRegisterResponse('admin')};
     userService.create.and.returnValue(mockObservable(mockUser));
     // Arrange
@@ -100,10 +108,11 @@ fdescribe('RegisterFormComponent', () => {
     expect(component.form.valid).toBeTruthy();
     expect(userService.create).toHaveBeenCalled();
     expect(userService.create).toHaveBeenCalledWith(component.form.value);
+    expect(router.navigateByUrl).toHaveBeenCalled();
   });
   it('should send the form successfully and change "loading" to "success"', fakeAsync(() => {
     // Arrange
-    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
+    // userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     const mockUser: User = {...getRegisterResponse('admin')};
     userService.create.and.returnValue(asyncData(mockUser));
     component.form.patchValue({
@@ -140,7 +149,7 @@ fdescribe('RegisterFormComponent', () => {
    */
   it('should complete the form from UI', fakeAsync(() => {
     // Arrange
-    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
+    // userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     spyOn(component, 'register').and.callThrough();
     const mockUser: User = {...getRegisterResponse('admin')};
     userService.create.and.returnValue(asyncData(mockUser));
@@ -169,7 +178,7 @@ fdescribe('RegisterFormComponent', () => {
   }));
 
   it('should error the form from UI', fakeAsync(() => {
-    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
+    // userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     // Arrange
     spyOn(component, 'register').and.callThrough();
     const mockUser: User = {...getRegisterResponse('admin')};

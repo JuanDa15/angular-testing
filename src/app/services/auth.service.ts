@@ -23,6 +23,10 @@ export class AuthService {
   ) {
   }
 
+  getUser() {
+    return this.user.asObservable();
+  }
+
   getCurrentUser() {
     const token = this.tokenService.getToken();
     if (token) {
